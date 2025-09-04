@@ -15,9 +15,9 @@ impath = os.path.join(cpath, "Images")
 # Declare Functions
 def call_web(image_num):
 	global url
-	url = url.format(str(image_num))
+	new_url = url.format(image_num)
 	try:
-		resp = req.get(url)
+		resp = req.get(new_url)
 		if resp.status_code == 200:
 			return resp.text
 		else:
@@ -77,8 +77,7 @@ def filter_links(link_ls):
 	
 def image_page_finder():
 	image_links =[]
-#	for i in range(0, 250, 25):
-	for i in range(0, 2): # For testing only. 
+	for i in range(0, 505, 24):
 		raw_text = call_web(i)
 		page_links = extract_image_links(raw_text)
 		page_photo_links = filter_links(page_links)
@@ -112,7 +111,10 @@ def image_downloader(image_ls):
 # Run Application
 
 if __name__=="__main__":
-	image_page_links = image_page_finder()
+	image_page_links = list(set(image_page_finder()))
+	print(len(image_page_links))
 	image_links = image_finder(image_page_links)
-	image_downloader(image_links)
+	print(len(image_links)) # How many potential images does this return? Ideally I want 100-200 or more.
+#	As it currently stands, this is just over 2K images... prior to being sorted and any other cleaning.
+#	image_downloader(image_links) #Use in Prod Only
 	
