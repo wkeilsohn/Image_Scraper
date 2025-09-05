@@ -104,6 +104,7 @@ def image_downloader(image_ls):
 			img_name = os.path.basename(i)
 			with open(os.path.join(impath, img_name), "wb") as f:
 				f.write(img_data)
+			print(img_name)
 			time.sleep(1) # Once again, I don't want to go over my alloted requests. 
 		except Exception as e:
 			print(e)
@@ -112,9 +113,9 @@ def image_downloader(image_ls):
 
 if __name__=="__main__":
 	image_page_links = list(set(image_page_finder()))
-	print(len(image_page_links))
-	image_links = image_finder(image_page_links)
-	print(len(image_links)) # How many potential images does this return? Ideally I want 100-200 or more.
+	# print(len(image_page_links))
+	image_links = list(set(image_finder(image_page_links)))
+	# print(len(image_links)) # How many potential images does this return? Ideally I want 100-200 or more.
 #	As it currently stands, this is just over 2K images... prior to being sorted and any other cleaning.
-#	image_downloader(image_links) #Use in Prod Only
+	image_downloader(image_links) #Use in Prod Only
 	
