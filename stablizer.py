@@ -11,15 +11,21 @@ import requests as req
 from bs4 import BeautifulSoup
 import time
 from random import randint
+import math
 
 # Declare Variables
-url = "https://bugguide.net/node/view/540/bgimage?from={}"
+url = "https://bugguide.net/node/view/81/bgimage?from={}"
 cpath = os.getcwd()
 impath = os.path.join(cpath, "Images")
+drop_path = os.path.join(impath, "Leps_General")
 
-max_images = 0
-max_num_images = 1000
-max_num_pages = max_num_images / 24
+# max_images = 6332 # Moths
+# max_images = 19861 # Skippers
+# max_images = 3914 # Monarch Family Butterflies
+max_images = 496324 # All Leps
+# max_images = 63089 # All Butterflies
+max_num_images = 1100  # 4000 # 10x the target data. 
+max_num_pages = math.floor(max_num_images / 24)
 
 # Declare Functions
 def call_web(image_num):
@@ -113,7 +119,7 @@ def image_downloader(image_ls):
 		try:
 			img_data = req.get(i).content
 			img_name = os.path.basename(i)
-			with open(os.path.join(impath, img_name), "wb") as f:
+			with open(os.path.join(drop_path, img_name), "wb") as f:
 				f.write(img_data)
 			print(img_name)
 			time.sleep(1) # Once again, I don't want to go over my alloted requests. 
@@ -123,10 +129,12 @@ def image_downloader(image_ls):
 # Run Application
 
 if __name__=="__main__":
-	image_page_links = list(set(image_page_finder()))
+	# image_page_links = list(set(image_page_finder()))
 	# print(len(image_page_links))
-	image_links = list(set(image_finder(image_page_links)))
-	# print(len(image_links)) # How many potential images does this return? Ideally I want 100-200 or more.
-#	As it currently stands, this is just over 2K images... prior to being sorted and any other cleaning.
+	# image_links = list(set(image_finder(image_page_links)))
+	image_links = []
+	while len(image_links) < max_num_images:
+		image_page_links = list(set(image_page_finder()))
+		image_links = list(set(image_finder(image_page_links)))
 	image_downloader(image_links) #Use in Prod Only
 	
